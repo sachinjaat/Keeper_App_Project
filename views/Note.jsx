@@ -17,4 +17,4 @@ function Note(props) {
   );
 }
 
-export default Note;
+export {Note};
