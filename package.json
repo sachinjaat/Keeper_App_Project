@@ -13,6 +13,7 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.2",
+    "jsx": "^0.9.89",
     "mongoose": "^5.9.22",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

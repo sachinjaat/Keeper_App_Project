@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import path from "path";
 
 // require("dotenv").config();
 
@@ -24,7 +25,7 @@ connection.once('open', () => {
 
 
 import noteRouter from './routes/crud.js';
-app.use('/crud' ,noteRouter);
+app.use('/' ,noteRouter);
 
 app.listen(port,() => {
     console.log(`Server is running on port: ${port}`);

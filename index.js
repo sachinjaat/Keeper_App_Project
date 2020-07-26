@@ -1,12 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {App} from "./views/App";
+import {FinalApp} from "./views/finalApp";
 import "./public/styles.css";
+import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
 
 
-ReactDOM.render((
-  <Switch>
-        <Route exact path="/" component={App} />
-      </Switch>),
-      document.getElementById('root')
-  );
+ReactDOM.render(<FinalApp />,document.getElementById('root')
+);
