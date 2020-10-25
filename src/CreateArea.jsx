@@ -2,23 +2,17 @@ import React, { useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import Fab from "@material-ui/core/Fab";
 import Zoom from "@material-ui/core/Zoom";
+import db from "./firebase";
+import { useStateValue } from "./stateProvider";
 
-import {Footer} from "./Footer";
-// import Nav from "./Nav";
-import Axios from "axios";
-
-
-let NoteArray = [];
-function Addnote(/*props*/) {
-  let [Notes, setNotes] = useState([]);
+function CreateArea(props) {
   const [isExpanded, setExpanded] = useState(false);
+  const [{user},dispatch] = useStateValue();
 
   const [note, setNote] = useState({
     title: "",
     content: ""
   });
-
-
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -31,30 +25,18 @@ function Addnote(/*props*/) {
     });
   }
 
-  const submitNote =  async e  => {
-      setNote({
-        ...note
-      })
-       setNotes(prevNotes => {
-         return [...prevNotes, note];
-       });
-
-       try {
-         await Axios.post('http://localhost:5000',note)
-        setNote({
-            ...note,
-            title: '',
-            content:''
-        });
-        window.location = '/notes';
-      } catch (error) {
-        console.log(error);
-      }
-       e.preventDefault();
-    }
-
-
-  NoteArray = [...Notes];
+  function submitNote(event) {
+    //props.onAdd();
+    db.collection('users').doc(user.uid).collection('notes').doc(`${note.title}`).set({
+      title: note.title,
+      content: note.content
+    })
+    setNote({
+      title: "",
+      content: ""
+    });
+    event.preventDefault();
+  }
 
   function expand() {
     setExpanded(true);
@@ -86,9 +68,8 @@ function Addnote(/*props*/) {
           </Fab>
         </Zoom>
       </form>
-      <Footer />
     </div>
   );
 }
 
-export {NoteArray, Addnote};
+export default CreateArea;

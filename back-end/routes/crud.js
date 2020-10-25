@@ -1,9 +1,12 @@
 import express from "express";
 import Note from "../models/schema.js";
+import User from "../models/users.js";
+import auth from "../middleware/auth.js";
+import bcrypt from 'bcrypt';
 const router = express.Router();
 
 //Register Page
-router.post("/", async (req, res) => {
+router.post("/register", async (req, res) => {
   try{
     const { username, password, confirmPassword } = req.body;
     // Validation
@@ -62,32 +65,50 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.route("/loggedin/notes").get((req, res) => {
-    Note.find()
+router.route("/notes").get(auth, (req, res) => {
+  try{
+    Note.find({ userId: req.body.userId})
       .then(notes => res.json(notes))
       .catch(err => res.status(400).json('Error ' + err))
+  } catch(err){
+    res.status(500).json({ error: err.message });
+    }
+
+
    });
 
 
 //post route
-router.route("/loggedin").post((req, res) => {
-   const title = req.body.title;
-   const content = req.body.content;
+router.route("/notes").post(auth, (req, res) => {
+  try{
+    const title = req.body.title;
+    const content = req.body.content;
+    const userId = req.body._id;
 
-  const newNote = new Note({
-    title,
-    content
-  });
-  newNote.save()
-   .then(() => res.json("Note Added"))
-   .catch(err => res.status(400).json("Error " + err));
+   const newNote = new Note({
+     title,
+     content,
+     userId
+   });
+   newNote.save()
+    .then(() => res.json("Note Added"))
+    .catch(err => res.status(400).json("Error " + err));
+  } catch(err){
+    res.status(500).json({ error: err.message });
+    }
+
 });
 
 //delete
-router.route("/loggedin/notes/:id").delete((req, res) => {
-  Note.findByIdAndDelete(req.params.id)
-  .then(() => res.json("Note deleted."))
-  .catch(err => res.status(400).json("Error: " + err));
+router.route("/delete").delete(auth, (req, res) => {
+  try{
+    Note.findByIdAndDelete(req.user)
+    .then(() => res.json("Note deleted."))
+    .catch(err => res.status(400).json("Error: " + err));
+  } catch(err){
+    res.status(500).json({ error: err.message });
+    }
+
 });
 
 export default router;
